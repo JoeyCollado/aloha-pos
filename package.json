@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:indexes": "tsx scripts/ensure-indexes.ts"
   },
@@ -15,14 +15,17 @@
     "@stripe/react-stripe-js": "^7.0.0",
     "@stripe/stripe-js": "^10.1.0",
     "fast-xml-parser": "^5.11.2",
+    "framer-motion": "^14.6.0",
     "mongodb": "^7.7.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "react-icons": "^5.7.0",
     "stripe": "^23.0.0",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,68 +1,40 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-50: #fef7ee;
+  --color-brand-100: #fdedd6;
+  --color-brand-500: #eb771c;
+  --color-brand-600: #dc5c12;
+  --color-brand-700: #b64511;
+}
+
 :root {
   --bg: #f8fafc;
   --fg: #0f172a;
   --muted: #64748b;
   --border: #e2e8f0;
   --card: #ffffff;
-  --brand: #eb771c;
 }
 
 body {
   background-color: var(--bg);
   color: var(--fg);
-  font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer components {
   .card {
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    @apply bg-white border border-[var(--border)] rounded-xl p-5 shadow-sm;
   }
-  
   .btn {
-    background-color: var(--brand);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    transition: opacity 0.2s;
+    @apply bg-[var(--brand-500)] text-white px-4 py-2 rounded-lg font-medium hover:bg-[var(--brand-600)] disabled:opacity-50 transition-colors;
   }
-  .btn:hover { opacity: 0.9; }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  
-  .btn-ghost {
-    background-color: transparent;
-    color: var(--fg);
-    border: 1px solid var(--border);
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-  }
-  .btn-ghost:hover { background-color: #f1f5f9; }
-  
   .input {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    background-color: white;
-    outline: none;
+    @apply w-full border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--brand-500)] bg-white;
   }
-  .input:focus { border-color: var(--brand); }
-  
   .label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-    color: var(--fg);
+    @apply block text-sm font-medium mb-1 text-[var(--fg)];
   }
-  
-  .muted { color: var(--muted); }
-} 
+  .muted {
+    @apply text-[var(--muted)];
+  }
+}

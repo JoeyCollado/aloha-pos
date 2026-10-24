@@ -1,5 +1,6 @@
 import { requireOwner, UnauthorizedError } from "@/lib/auth";
 import { collection } from "@/lib/db";
+import { FiShoppingBag, FiBox, FiAlertTriangle, FiActivity } from "react-icons/fi";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +11,10 @@ export default async function DashboardPage() {
   } catch (err) {
     if (err instanceof UnauthorizedError) {
       return (
-        <div className="p-8 text-center">
+        <div className="p-8 text-center card max-w-md mx-auto mt-20">
+          <FiAlertTriangle className="text-red-500 mx-auto mb-4" size={48} />
           <h2 className="text-xl font-bold mb-2">Access Denied</h2>
-          <p className="text-gray-600">You are signed in, but you do not have the "owner" role.</p>
-          <p className="text-gray-600 mt-2">Please go to the Clerk Dashboard, add {"{\"role\": \"owner\"}"} to your Public Metadata, and sign out and back in.</p>
+          <p className="text-gray-600">You do not have the &quot;owner&quot; role.</p>
         </div>
       );
     }
@@ -22,30 +23,85 @@ export default async function DashboardPage() {
 
   const itemsCount = await (await collection("items")).countDocuments({ ownerId: owner.clerkUserId });
   const productsCount = await (await collection("products")).countDocuments({ ownerId: owner.clerkUserId });
-  const lowStock = await (await collection("items"))
+  const lowStockItems = await (await collection("items"))
     .find({ ownerId: owner.clerkUserId, $expr: { $lte: ["$quantity", "$reorderLevel"] } })
     .toArray();
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="muted text-sm">Welcome back to Aloha POS.</p>
-      </header>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+        <p className="text-gray-500 mt-1">Here is the latest overview of your business.</p>
+      </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="card">
-          <div className="muted text-xs uppercase font-semibold">Products</div>
-          <div className="text-3xl font-bold mt-2">{productsCount}</div>
+      {/* Stat Cards Grid */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="card flex items-center gap-5">
+          <div className="p-4 bg-blue-50 text-blue-600 rounded-xl">
+            <FiShoppingBag size={28} />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Products</div>
+            <div className="text-3xl font-bold text-gray-900 mt-1">{productsCount}</div>
+          </div>
         </div>
-        <div className="card">
-          <div className="muted text-xs uppercase font-semibold">Inventory Items</div>
-          <div className="text-3xl font-bold mt-2">{itemsCount}</div>
+
+        <div className="card flex items-center gap-5">
+          <div className="p-4 bg-[#fef7ee] text-[#eb771c] rounded-xl">
+            <FiBox size={28} />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Inventory</div>
+            <div className="text-3xl font-bold text-gray-900 mt-1">{itemsCount}</div>
+          </div>
         </div>
-        <div className="card">
-          <div className="muted text-xs uppercase font-semibold">Low Stock Alerts</div>
-          <div className="text-3xl font-bold mt-2 text-red-600">{lowStock.length}</div>
+
+        <div className="card flex items-center gap-5">
+          <div className="p-4 bg-red-50 text-red-600 rounded-xl">
+            <FiAlertTriangle size={28} />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Low Stock</div>
+            <div className="text-3xl font-bold text-red-600 mt-1">{lowStockItems.length}</div>
+          </div>
         </div>
+      </div>
+
+      {/* Low Stock Details Panel */}
+      <div className="card p-0 overflow-hidden">
+        <div className="p-6 border-b border-[var(--border)] bg-gray-50 flex items-center gap-2">
+          <FiActivity className="text-[var(--brand-500)]" />
+          <h2 className="font-semibold text-gray-900">Items Requiring Attention</h2>
+        </div>
+        {lowStockItems.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            All inventory items are currently above their reorder levels.
+          </div>
+        ) : (
+          <table className="w-full text-sm text-left">
+            <thead className="bg-white border-b border-[var(--border)] text-gray-500">
+              <tr>
+                <th className="px-6 py-4 font-semibold">Item Name</th>
+                <th className="px-6 py-4 font-semibold">Current Stock</th>
+                <th className="px-6 py-4 font-semibold text-right">Reorder Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lowStockItems.map((item) => (
+                <tr key={String(item._id)} className="border-b border-[var(--border)] last:border-0 hover:bg-gray-50">
+                  <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
+                  <td className="px-6 py-4 font-bold text-red-600">
+                    {item.quantity} {item.unit}
+                  </td>
+                  <td className="px-6 py-4 text-right text-gray-500">
+                    {item.reorderLevel} {item.unit}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

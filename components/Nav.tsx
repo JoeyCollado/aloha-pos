@@ -21,8 +21,10 @@ export function Nav() {
           <Link
             key={link.href}
             href={link.href}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-              active ? "bg-[var(--brand)] text-white" : "text-[var(--fg)] hover:bg-gray-100"
+            className={`rounded-lg px-4 py-3 text-sm font-medium transition-all ${
+              active 
+                ? "bg-[var(--brand-50)] text-[var(--brand-700)]" 
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
             }`}
           >
             {link.label}

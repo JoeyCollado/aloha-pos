@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { FiPlus } from "react-icons/fi";
 
 export function InventoryForm() {
   const router = useRouter();
@@ -38,38 +40,43 @@ export function InventoryForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="card grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
-      <div className="col-span-2">
-        <label className="label">Name</label>
-        <input name="name" className="input" required placeholder="e.g. Mozzarella" />
+    <motion.form 
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      onSubmit={onSubmit} 
+      className="card grid grid-cols-2 md:grid-cols-6 gap-3 items-end"
+    >
+      <div className="col-span-2 md:col-span-1">
+        <label className="label text-xs">Name</label>
+        <input name="name" className="input text-sm" required placeholder="e.g. Mozzarella" />
       </div>
-      <div className="col-span-1">
-        <label className="label">Category</label>
-        <input name="category" className="input" required placeholder="Cheese" />
+      <div className="col-span-1 md:col-span-1">
+        <label className="label text-xs">Category</label>
+        <input name="category" className="input text-sm" required placeholder="Cheese" />
       </div>
-      <div className="col-span-1">
-        <label className="label">Unit</label>
-        <input name="unit" className="input" required placeholder="kg" />
+      <div className="col-span-1 md:col-span-1">
+        <label className="label text-xs">Unit</label>
+        <input name="unit" className="input text-sm" required placeholder="kg" />
       </div>
-      <div className="col-span-1">
-        <label className="label">Qty</label>
-        <input name="quantity" type="number" step="0.01" className="input" required defaultValue={0} />
+      <div className="col-span-1 md:col-span-1">
+        <label className="label text-xs">Qty</label>
+        <input name="quantity" type="number" step="0.01" className="input text-sm" required defaultValue={0} />
       </div>
-      <div className="col-span-1">
-        <label className="label">Reorder</label>
-        <input name="reorderLevel" type="number" step="0.01" className="input" required defaultValue={5} />
+      <div className="col-span-1 md:col-span-1">
+        <label className="label text-xs">Reorder</label>
+        <input name="reorderLevel" type="number" step="0.01" className="input text-sm" required defaultValue={5} />
       </div>
-      <div className="col-span-1">
-        <label className="label">Cost (₱)</label>
-        <input name="unitCost" type="number" step="0.01" className="input" required defaultValue={0} />
+      <div className="col-span-1 md:col-span-1">
+        <label className="label text-xs">Cost (₱)</label>
+        <input name="unitCost" type="number" step="0.01" className="input text-sm" required defaultValue={0} />
       </div>
       
       <div className="col-span-full flex justify-end mt-2">
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? "Adding..." : "Add Item"}
+        <button type="submit" className="btn flex items-center gap-2" disabled={loading}>
+          {loading ? "Adding..." : <><FiPlus /> <p className="text-black">Add Item</p></>}
         </button>
       </div>
-      {error && <p className="col-span-full text-red-600 text-sm">{error}</p>}
-    </form>
+      {error && <p className="col-span-full text-red-600 text-sm mt-1">{error}</p>}
+    </motion.form>
   );
 }

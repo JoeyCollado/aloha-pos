@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { FiPlus } from "react-icons/fi";
 
 export function ProductForm() {
   const router = useRouter();
@@ -36,26 +38,31 @@ export function ProductForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="card grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
+    <motion.form 
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      onSubmit={onSubmit} 
+      className="card grid grid-cols-2 md:grid-cols-4 gap-3 items-end"
+    >
       <div className="col-span-2">
-        <label className="label">Product Name</label>
-        <input name="name" className="input" required placeholder="e.g. Wakito's Pepperoni" />
+        <label className="label text-xs">Product Name</label>
+        <input name="name" className="input text-sm" required placeholder="e.g. Wakito's Pepperoni" />
       </div>
       <div className="col-span-1">
-        <label className="label">Category</label>
-        <input name="category" className="input" required placeholder="Pizza" />
+        <label className="label text-xs">Category</label>
+        <input name="category" className="input text-sm" required placeholder="Pizza" />
       </div>
       <div className="col-span-1">
-        <label className="label">Price (₱)</label>
-        <input name="price" type="number" step="0.01" className="input" required defaultValue={0} />
+        <label className="label text-xs">Price (₱)</label>
+        <input name="price" type="number" step="0.01" className="input text-sm" required defaultValue={0} />
       </div>
       
       <div className="col-span-full flex justify-end mt-2">
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? "Adding..." : "Add Product"}
+        <button type="submit" className="btn flex items-center gap-2 " disabled={loading}>
+          {loading ? "Adding..." : <><FiPlus /> <p className="text-black">Add Product</p></>}
         </button>
       </div>
-      {error && <p className="col-span-full text-red-600 text-sm">{error}</p>}
-    </form>
+      {error && <p className="col-span-full text-red-600 text-sm mt-1">{error}</p>}
+    </motion.form>
   );
 }
