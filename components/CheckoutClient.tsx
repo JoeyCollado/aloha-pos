@@ -201,7 +201,7 @@ export function CheckoutClient({ initialProducts }: { initialProducts: any[] }) 
           <button 
             onClick={handleCheckout} 
             disabled={cartItems.length === 0 || loading || !!clientSecret}
-            className="btn w-full py-3 text-lg"
+            className="btn w-full py-3 text-lg text-black font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Processing..." : method === "card" ? "Continue to Card" : "Pay Now"}
           </button>
@@ -258,7 +258,7 @@ function StripePaymentForm({ clientSecret, onSuccess, onError }: { clientSecret:
   return (
     <form onSubmit={handleSubmit} className="space-y-4 h-full flex flex-col justify-end">
       <PaymentElement />
-      <button type="submit" disabled={!stripe || isProcessing} className="btn w-full py-3 mt-4">
+      <button type="submit" disabled={!stripe || isProcessing} className="btn w-full py-3 mt-4 text-black font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
         {isProcessing ? "Processing..." : "Confirm Payment"}
       </button>
     </form>
