@@ -1,7 +1,9 @@
 import { withOwner } from "@/lib/auth";
-import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-09-30.endive" });
 
 const CheckoutSchema = z.object({
   items: z.array(z.object({
@@ -9,36 +11,63 @@ const CheckoutSchema = z.object({
     quantity: z.number().int().positive(),
   })).min(1),
   paymentMethod: z.enum(["cash", "card", "ewallet"]),
+  paymentIntentId: z.string().optional(),
 });
+
+// Define the shape of our successful response
+interface CheckoutResponse {
+  ok: boolean;
+  saleId: string;
+  saleNumber: string;
+  total: number;
+  saleItems: {
+    ownerId: string;
+    productId: string;
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+    lineTotal: number;
+    createdAt: Date;
+    saleId?: string;
+  }[];
+}
 
 export async function POST(req: Request) {
   return withOwner(async (owner) => {
     const body = await req.json();
     const parsed = CheckoutSchema.parse(body);
 
+    // 1. If card, verify the Stripe payment succeeded
+    let stripeRef: string | undefined = undefined;
+    if (parsed.paymentMethod === "card") {
+      if (!parsed.paymentIntentId) throw new Error("Missing payment intent");
+      const intent = await stripe.paymentIntents.retrieve(parsed.paymentIntentId);
+      if (intent.status !== "succeeded") throw new Error("Payment not successful");
+      stripeRef = intent.id;
+    }
+
     const client = await (await import("mongodb")).MongoClient.connect(process.env.MONGODB_URI!);
     const db = client.db(process.env.MONGODB_DB || "aloha_rmr");
     const session = client.startSession();
 
     try {
-      let resultData: any = null;
+      // 2. Type the result data correctly
+      let resultData: CheckoutResponse | null = null;
 
       await session.withTransaction(async () => {
-        // 1. Fetch products securely from DB to get real prices
+        // Product fetching and total calculation
         const productIds = parsed.items.map(i => new ObjectId(i.productId));
         const products = await db.collection("products")
           .find({ _id: { $in: productIds }, ownerId: owner.clerkUserId })
           .toArray();
-
         const productMap = new Map(products.map(p => [String(p._id), p]));
 
-        // 2. Recalculate totals
         let total = 0;
         const saleItems = [];
-
+        
         for (const item of parsed.items) {
           const product = productMap.get(item.productId);
-          if (!product || !product.active) throw new Error(`Product not found or inactive`);
+          if (!product || !product.active) throw new Error(`Product not found`);
           
           const lineTotal = product.price * item.quantity;
           total += lineTotal;
@@ -54,40 +83,31 @@ export async function POST(req: Request) {
           });
         }
 
-        // 3. Generate Sale Header
+        // Save Sale Header, Items, and Payment
         const saleNumber = `SALE-${Date.now()}`;
-        const saleDoc = {
+        const saleRes = await db.collection("sales").insertOne({
           ownerId: owner.clerkUserId,
-          saleNumber,
-          subtotal: total,
-          tax: 0,
-          total,
-          status: "paid",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        const saleRes = await db.collection("sales").insertOne(saleDoc, { session });
+          saleNumber, subtotal: total, tax: 0, total, status: "paid",
+          createdAt: new Date(), updatedAt: new Date(),
+        }, { session });
+        
         const saleId = String(saleRes.insertedId);
 
-        // 4. Save Sale Items
         const finalSaleItems = saleItems.map(si => ({ ...si, saleId }));
         await db.collection("sale_items").insertMany(finalSaleItems, { session });
 
-        // 5. Save Payment
         await db.collection("payments").insertOne({
           ownerId: owner.clerkUserId,
           saleId,
           method: parsed.paymentMethod,
           amount: total,
           status: "succeeded",
+          providerReference: stripeRef,
           idempotencyKey: `pay_${saleNumber}`,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date(), updatedAt: new Date(),
         }, { session });
 
-        // 6. Deduct Stock (if recipes exist)
-        // For each item sold, find its recipe and deduct ingredients
+        // Deduct Stock (Recipe logic)
         for (const item of parsed.items) {
           const recipes = await db.collection("recipes")
             .find({ ownerId: owner.clerkUserId, productId: item.productId })
@@ -96,17 +116,12 @@ export async function POST(req: Request) {
           for (const recipe of recipes) {
             const qtyToDeduct = recipe.quantityRequired * item.quantity;
             
-            // Deduct from items
             await db.collection("items").updateOne(
               { _id: new ObjectId(recipe.itemId), ownerId: owner.clerkUserId },
-              { 
-                $inc: { quantity: -qtyToDeduct },
-                $set: { updatedAt: new Date() } 
-              },
+              { $inc: { quantity: -qtyToDeduct }, $set: { updatedAt: new Date() } },
               { session }
             );
 
-            // Log the movement
             await db.collection("movements").insertOne({
               ownerId: owner.clerkUserId,
               itemId: recipe.itemId,
@@ -119,12 +134,19 @@ export async function POST(req: Request) {
           }
         }
 
-        resultData = { saleId, saleNumber, total, saleItems: finalSaleItems };
+        resultData = { 
+          ok: true, 
+          saleId, 
+          saleNumber, 
+          total, 
+          saleItems: finalSaleItems 
+        };
       });
 
-      return Response.json({ ok: true, ...resultData });
-    } catch (err: any) {
-      return Response.json({ error: err.message || "Transaction failed" }, { status: 500 });
+      return Response.json(resultData);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Transaction failed";
+      return Response.json({ error: message }, { status: 500 });
     } finally {
       await session.endSession();
       await client.close();

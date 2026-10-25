@@ -5,7 +5,8 @@ const isPublic = createRouteMatcher([
   "/api/health",
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
+// Change "export default clerkMiddleware" to "export const proxy = clerkMiddleware"
+export const proxy = clerkMiddleware(async (auth, req) => {
   if (!isPublic(req)) {
     await auth.protect();
   }
