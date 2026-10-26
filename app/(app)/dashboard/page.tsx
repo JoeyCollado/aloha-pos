@@ -1,26 +1,12 @@
 // app/(app)/dashboard/page.tsx
-import { requireOwner, UnauthorizedError } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { FiShoppingBag, FiBox, FiAlertTriangle, FiActivity } from "react-icons/fi";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  let owner;
-  try {
-    owner = await requireOwner();
-  } catch (err) {
-    if (err instanceof UnauthorizedError) {
-      return (
-        <div className="p-8 text-center card max-w-md mx-auto mt-20">
-          <FiAlertTriangle className="text-red-500 mx-auto mb-4" size={48} />
-          <h2 className="text-xl font-bold mb-2">Access Denied</h2>
-          <p className="text-gray-600">You do not have the &quot;owner&quot; role.</p>
-        </div>
-      );
-    }
-    throw err;
-  }
+  const owner = await requireOwner();
 
   const itemsCount = await (await collection("items")).countDocuments({ ownerId: owner.clerkUserId });
   const productsCount = await (await collection("products")).countDocuments({ ownerId: owner.clerkUserId });
@@ -49,7 +35,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="card flex items-center gap-5">
-          <div className="p-4 bg-brand-50 text-brand-500 rounded-xl">
+          <div className="p-4 bg-orange-50 text-orange-500 rounded-xl">
             <FiBox size={28} />
           </div>
           <div>
@@ -72,7 +58,7 @@ export default async function DashboardPage() {
       {/* Low Stock Details Panel */}
       <div className="card p-0 overflow-hidden">
         <div className="p-6 border-b border-(--border) bg-gray-50 flex items-center gap-2">
-          <FiActivity className="text-(--brand-500)" />
+          <FiActivity className="text-(--brand)" />
           <h2 className="font-semibold text-gray-900">Items Requiring Attention</h2>
         </div>
         {lowStockItems.length === 0 ? (
@@ -93,7 +79,6 @@ export default async function DashboardPage() {
                 <tr key={String(item._id)} className="border-b border-(--border) last:border-0 hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
                   
-                  {/* Clean formatting: 2 / 10 */}
                   <td className="px-6 py-4 font-bold text-red-600">
                     <div className="flex items-center gap-1.5">
                       <span>{item.quantity}</span>
@@ -101,7 +86,6 @@ export default async function DashboardPage() {
                     </div>
                   </td>
                   
-                  {/* Clean formatting: 5 / 10 */}
                   <td className="px-6 py-4 text-right text-gray-500">
                     <div className="flex items-center justify-end gap-1.5">
                       <span>{item.reorderLevel}</span>
