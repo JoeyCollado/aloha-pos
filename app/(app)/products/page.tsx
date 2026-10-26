@@ -1,3 +1,4 @@
+// app/(app)/products/page.tsx
 import { requireOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { ProductForm } from "@/components/ProductForm";
@@ -50,7 +51,7 @@ export default async function ProductsPage() {
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
-            <FiShoppingBag className="text-[var(--brand)]" /> Products (Menu)
+            <FiShoppingBag className="text-(--brand)" /> Products (Menu)
           </h1>
           <p className="muted text-sm mt-1">Manage items sold at the POS.</p>
         </div>

@@ -1,3 +1,4 @@
+// app(app)/checkout/page.tsx
 import { requireOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { CheckoutClient } from "@/components/CheckoutClient";

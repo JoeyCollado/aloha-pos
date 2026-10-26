@@ -1,5 +1,5 @@
+// app/api/movements/route.ts
 import { withOwner } from "@/lib/auth";
-import { getDb, collection } from "@/lib/db";
 import { MovementCreateSchema } from "@/lib/models";
 import { parseJson } from "@/lib/validation";
 import { ObjectId } from "mongodb";

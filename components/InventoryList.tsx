@@ -22,7 +22,7 @@ interface InventoryListProps {
 export function InventoryList({ initialItems, deleteItemAction }: InventoryListProps) {
   if (initialItems.length === 0) {
     return (
-      <div className="card text-center py-12 text-[var(--muted)]">
+      <div className="card text-center py-12 text-(--muted)">
         No items yet. Add your first ingredient above.
       </div>
     );
@@ -32,8 +32,8 @@ export function InventoryList({ initialItems, deleteItemAction }: InventoryListP
     <>
       <div className="hidden md:block card p-0 overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-[var(--border)]">
-            <tr className="text-left text-[var(--muted)]">
+          <thead className="bg-gray-50 border-b border-(--border)">
+            <tr className="text-left text-(--muted)">
               <th className="p-4 font-medium">Item Name</th>
               <th className="p-4 font-medium">Category</th>
               <th className="p-4 font-medium">Stock</th>
@@ -49,7 +49,7 @@ export function InventoryList({ initialItems, deleteItemAction }: InventoryListP
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, backgroundColor: "#fee2e2" }}
-                  className="border-b border-[var(--border)] last:border-0 hover:bg-gray-50 transition-colors"
+                  className="border-b border-(--border) last:border-0 hover:bg-gray-50 transition-colors"
                 >
                   <td className="p-4 font-medium">{item.name}</td>
                   <td className="p-4">
@@ -58,10 +58,14 @@ export function InventoryList({ initialItems, deleteItemAction }: InventoryListP
                     </span>
                   </td>
                   <td className="p-4">
+                    {/* MODIFIED: Clean typography instead of badges */}
                     <div className="flex items-center gap-2">
-                      <span className={item.quantity <= item.reorderLevel ? "text-red-600 font-bold" : ""}>
-                        {item.quantity} {item.unit}
-                      </span>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className={item.quantity <= item.reorderLevel ? "text-red-600 font-bold" : "font-medium"}>
+                          {item.quantity}
+                        </span>
+                        <span className="text-xs text-gray-400 font-normal">/ {item.unit}</span>
+                      </div>
                       {item.quantity <= item.reorderLevel && (
                         <FiAlertTriangle className="text-red-500" title="Low Stock" />
                       )}
@@ -110,11 +114,13 @@ export function InventoryList({ initialItems, deleteItemAction }: InventoryListP
                 </div>
               </div>
               
-              <div className="flex justify-between items-end mt-2 pt-3 border-t border-[var(--border)]">
+              <div className="flex justify-between items-end mt-2 pt-3 border-t border-(--border)">
                 <div>
                   <div className="text-xs text-gray-500">Current Stock</div>
-                  <div className={`font-semibold ${item.quantity <= item.reorderLevel ? "text-red-600" : ""}`}>
-                    {item.quantity} {item.unit}
+                  {/* MODIFIED: Applied clean typography to mobile card as well */}
+                  <div className={`font-semibold flex items-baseline gap-1 ${item.quantity <= item.reorderLevel ? "text-red-600" : ""}`}>
+                    <span>{item.quantity}</span>
+                    <span className="text-xs text-gray-400 font-normal">/ {item.unit}</span>
                   </div>
                 </div>
                 <div className="text-right">

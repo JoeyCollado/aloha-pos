@@ -1,3 +1,4 @@
+// app/api/products/route.ts
 import { withOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { ProductCreateSchema } from "@/lib/models";

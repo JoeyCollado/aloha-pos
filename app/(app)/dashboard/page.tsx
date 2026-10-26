@@ -1,3 +1,4 @@
+// app/(app)/dashboard/page.tsx
 import { requireOwner, UnauthorizedError } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { FiShoppingBag, FiBox, FiAlertTriangle, FiActivity } from "react-icons/fi";
@@ -48,7 +49,7 @@ export default async function DashboardPage() {
         </div>
 
         <div className="card flex items-center gap-5">
-          <div className="p-4 bg-[#fef7ee] text-[#eb771c] rounded-xl">
+          <div className="p-4 bg-brand-50 text-brand-500 rounded-xl">
             <FiBox size={28} />
           </div>
           <div>
@@ -70,8 +71,8 @@ export default async function DashboardPage() {
 
       {/* Low Stock Details Panel */}
       <div className="card p-0 overflow-hidden">
-        <div className="p-6 border-b border-[var(--border)] bg-gray-50 flex items-center gap-2">
-          <FiActivity className="text-[var(--brand-500)]" />
+        <div className="p-6 border-b border-(--border) bg-gray-50 flex items-center gap-2">
+          <FiActivity className="text-(--brand-500)" />
           <h2 className="font-semibold text-gray-900">Items Requiring Attention</h2>
         </div>
         {lowStockItems.length === 0 ? (
@@ -80,7 +81,7 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <table className="w-full text-sm text-left">
-            <thead className="bg-white border-b border-[var(--border)] text-gray-500">
+            <thead className="bg-white border-b border-(--border) text-gray-500">
               <tr>
                 <th className="px-6 py-4 font-semibold">Item Name</th>
                 <th className="px-6 py-4 font-semibold">Current Stock</th>
@@ -89,13 +90,23 @@ export default async function DashboardPage() {
             </thead>
             <tbody>
               {lowStockItems.map((item) => (
-                <tr key={String(item._id)} className="border-b border-[var(--border)] last:border-0 hover:bg-gray-50">
+                <tr key={String(item._id)} className="border-b border-(--border) last:border-0 hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
+                  
+                  {/* Clean formatting: 2 / 10 */}
                   <td className="px-6 py-4 font-bold text-red-600">
-                    {item.quantity} {item.unit}
+                    <div className="flex items-center gap-1.5">
+                      <span>{item.quantity}</span>
+                      <span className="text-sm font-normal text-gray-400">/ {item.unit}</span>
+                    </div>
                   </td>
+                  
+                  {/* Clean formatting: 5 / 10 */}
                   <td className="px-6 py-4 text-right text-gray-500">
-                    {item.reorderLevel} {item.unit}
+                    <div className="flex items-center justify-end gap-1.5">
+                      <span>{item.reorderLevel}</span>
+                      <span className="text-sm font-normal text-gray-400">/ {item.unit}</span>
+                    </div>
                   </td>
                 </tr>
               ))}

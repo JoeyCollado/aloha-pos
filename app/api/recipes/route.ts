@@ -1,3 +1,4 @@
+// app/api/recipes/route.ts
 import { withOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { RecipeCreateSchema } from "@/lib/models";
@@ -8,7 +9,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
     
-    const query: any = { ownerId: owner.clerkUserId };
+    const query: { ownerId: string; productId?: string } = { ownerId: owner.clerkUserId };
     if (productId) query.productId = productId;
 
     const recipes = await (await collection("recipes")).find(query).toArray();

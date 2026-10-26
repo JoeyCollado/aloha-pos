@@ -72,13 +72,13 @@ export default async function SalesPage() {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Best Sellers */}
         <div className="card p-0 overflow-hidden">
-          <div className="p-4 border-b border-[var(--border)] bg-gray-50 flex items-center gap-2">
-            <FiTrendingUp className="text-[var(--brand)]" />
+          <div className="p-4 border-b border-(--border) bg-gray-50 flex items-center gap-2">
+            <FiTrendingUp className="text-(--brand)" />
             <h2 className="font-semibold">Best Sellers</h2>
           </div>
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-[var(--border)]">
-              <tr className="text-left text-[var(--muted)]">
+            <thead className="bg-gray-50 border-b border-(--border)">
+              <tr className="text-left text-(--muted)">
                 <th className="p-3">Product</th>
                 <th className="p-3 text-right">Qty Sold</th>
                 <th className="p-3 text-right">Revenue</th>
@@ -86,9 +86,9 @@ export default async function SalesPage() {
             </thead>
             <tbody>
               {plainBestSellers.length === 0 ? (
-                <tr><td colSpan={3} className="p-4 text-center text-[var(--muted)]">No data yet.</td></tr>
+                <tr><td colSpan={3} className="p-4 text-center text-(--muted)">No data yet.</td></tr>
               ) : plainBestSellers.map((b) => ( // 3. Removed 'any'
-                <tr key={b._id} className="border-b border-[var(--border)] last:border-0 hover:bg-gray-50">
+                <tr key={b._id} className="border-b border-(--border) last:border-0 hover:bg-gray-50">
                   <td className="p-3 font-medium">{b._id}</td>
                   <td className="p-3 text-right">{b.qtySold}</td>
                   <td className="p-3 text-right font-medium text-green-600">₱{b.revenue.toFixed(2)}</td>
@@ -100,8 +100,8 @@ export default async function SalesPage() {
 
         {/* Recent Transactions */}
         <div className="card p-0 overflow-hidden">
-          <div className="p-4 border-b border-[var(--border)] bg-gray-50 flex items-center gap-2">
-            <FiFileText className="text-[var(--brand)]" />
+          <div className="p-4 border-b border-(--border) bg-gray-50 flex items-center gap-2">
+            <FiFileText className="text-(--brand)" />
             <h2 className="font-semibold">Recent Transactions</h2>
           </div>
           <SalesTable initialSales={plainSales} />

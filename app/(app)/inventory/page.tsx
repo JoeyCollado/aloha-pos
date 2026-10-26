@@ -1,3 +1,4 @@
+// app/(app)/inventory/page.tsx
 import { requireOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { InventoryForm } from "@/components/InventoryForm";
@@ -37,7 +38,7 @@ export default async function InventoryPage() {
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
-            <FiBox className="text-[var(--brand)]" /> Inventory
+            <FiBox className="text-(--brand)" /> Inventory
           </h1>
           <p className="muted text-sm mt-1">Manage raw ingredients, packaging, and supplies.</p>
         </div>

@@ -1,3 +1,4 @@
+// app/(app)/movements/page.tsx
 import { requireOwner } from "@/lib/auth";
 import { collection } from "@/lib/db";
 import { MovementForm } from "@/components/MovementForm";
@@ -18,7 +19,7 @@ export default async function MovementsPage() {
     <div className="space-y-6 max-w-5xl mx-auto">
       <header>
         <h1 className="text-2xl font-semibold flex items-center gap-2">
-          <FiActivity className="text-[var(--brand)]" /> Stock Movements
+          <FiActivity className="text-(--brand)" /> Stock Movements
         </h1>
         <p className="muted text-sm mt-1">Record incoming deliveries, spoilage, or manual adjustments.</p>
       </header>
