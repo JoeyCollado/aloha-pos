@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { Nav } from "@/components/Nav";
-import { FiCloudRain, FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,8 +29,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         <div className="p-6 flex items-center justify-between border-b border-[var(--border)]">
           <div className="flex items-center gap-3">
-            <div className="bg-[var(--brand)] text-white p-2 rounded-lg">
-              <FiCloudRain size={20} />
+            <div className="w-9 h-9 bg-orange-600 text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+              <svg 
+                className="w-5 h-5 text-white" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.2" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 11-8 0"></path>
+              </svg>
             </div>
             <div>
               <div className="text-lg font-bold text-gray-900 leading-tight">Aloha Pos</div>
@@ -66,8 +75,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <FiMenu size={22} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="bg-[var(--brand)] text-white p-1.5 rounded-lg">
-              <FiCloudRain size={16} />
+            <div className="w-8 h-8 bg-orange-600 text-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+              <svg 
+                className="w-4 h-4 text-white" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.2" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 11-8 0"></path>
+              </svg>
             </div>
             <span className="font-bold text-gray-900">Aloha Pos</span>
           </div>
