@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <FiCloudRain size={20} />
             </div>
             <div>
-              <div className="text-lg font-bold text-gray-900 leading-tight">Aloha Weather</div>
+              <div className="text-lg font-bold text-gray-900 leading-tight">Aloha Pos</div>
               <div className="text-xs text-gray-500 font-medium">Daily Logging</div>
             </div>
           </div>
@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="bg-[var(--brand)] text-white p-1.5 rounded-lg">
               <FiCloudRain size={16} />
             </div>
-            <span className="font-bold text-gray-900">Aloha Weather</span>
+            <span className="font-bold text-gray-900">Aloha Pos</span>
           </div>
         </div>
         <UserButton />
