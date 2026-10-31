@@ -43,7 +43,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
             <div>
               <div className="text-lg font-bold text-gray-900 leading-tight">Aloha Pos</div>
-              <div className="text-xs text-gray-500 font-medium">Inventory Tracker</div>
+              <div className="text-xs text-gray-500 font-medium">Aloha RMR & Wakito's Pizza</div>
             </div>
           </div>
           <button 
